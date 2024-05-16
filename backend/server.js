@@ -23,7 +23,7 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/users", userRoutes);
 
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
     connectToMongoDB();
     console.log(`Server running on http://localhost:${PORT}`);
 });
