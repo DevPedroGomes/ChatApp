@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
+import cors from 'cors'
 
 import authRoutes from './routes/authRoute.js';
 import messageRoutes from './routes/messageRoutes.js';
@@ -11,7 +12,7 @@ import { app, server } from './socket/socket.js';
 
 const PORT = process.env.PORT || 5000;
 
-
+app.use(cors());
 dotenv.config();
 
 
