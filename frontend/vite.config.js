@@ -8,7 +8,7 @@ export default defineConfig({
     port:3000,
     proxy: {
       "/api":{
-        target: import.meta.env.TARGET || "https://localhost:5000", //or regular local path
+        target: process.env.TARGET || "https://localhost:5000", //or regular local path
       },
     },
   },
