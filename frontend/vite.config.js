@@ -8,7 +8,7 @@ export default defineConfig({
     port:3000,
     proxy: {
       "/api":{
-        target: "https://chatapp-backend-s7tg.onrender.com",
+        target: import.meta.env.TARGET || "https://localhost:5000", //or regular local path
       },
     },
   },
