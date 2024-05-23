@@ -1,3 +1,46 @@
+// import { createContext, useContext, useEffect, useState } from "react";
+// import { useAuthContext } from "./AuthContext";
+// import io from 'socket.io-client';
+
+// const SocketContext = createContext();
+
+// export const useSocketContext = () => {
+//     return useContext(SocketContext);
+// }
+
+// export const SocketContextProvider = ({children}) => {
+//     const [socket, setSocket] = useState(null);
+//     const [onlineUsers, setOnlineUsers] = useState([]);
+//     const {authUser} = useAuthContext();
+
+//     useEffect(()=>{
+//         if(authUser){
+//             const socket = io(process.env.TARGET || "http://localhost:5000", {
+//                 query: {
+//                     userId: authUser._id
+//                 }
+//             });
+
+//             setSocket(socket);
+
+//             socket.on("getOnlineUsers", (users)=>{
+//                 setOnlineUsers(users);
+//             });
+
+//             return () => socket.close();
+//         }else{
+//             if(socket){
+//                 socket.close();
+//                 setSocket(null);
+//             }
+//         }
+//     },[authUser])
+//     return (
+//         <SocketContext.Provider value={{socket, onlineUsers}}>
+//             {children}
+//         </SocketContext.Provider>
+//     )
+// } 
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuthContext } from "./AuthContext";
 import io from 'socket.io-client';
@@ -8,14 +51,15 @@ export const useSocketContext = () => {
     return useContext(SocketContext);
 }
 
-export const SocketContextProvider = ({children}) => {
+export const SocketContextProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState([]);
-    const {authUser} = useAuthContext();
+    const { authUser } = useAuthContext();
 
-    useEffect(()=>{
-        if(authUser){
+    useEffect(() => {
+        if (authUser) {
             const socket = io(process.env.TARGET || "http://localhost:5000", {
+                withCredentials: true, // Adicionar credenciais
                 query: {
                     userId: authUser._id
                 }
@@ -23,21 +67,30 @@ export const SocketContextProvider = ({children}) => {
 
             setSocket(socket);
 
-            socket.on("getOnlineUsers", (users)=>{
+            socket.on("getOnlineUsers", (users) => {
                 setOnlineUsers(users);
             });
 
+            socket.on('connect', () => {
+                console.log('Connected to server');
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Disconnected from server');
+            });
+
             return () => socket.close();
-        }else{
-            if(socket){
+        } else {
+            if (socket) {
                 socket.close();
                 setSocket(null);
             }
         }
-    },[authUser])
+    }, [authUser]);
+
     return (
-        <SocketContext.Provider value={{socket, onlineUsers}}>
+        <SocketContext.Provider value={{ socket, onlineUsers }}>
             {children}
         </SocketContext.Provider>
-    )
-} 
+    );
+};
